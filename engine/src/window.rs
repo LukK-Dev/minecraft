@@ -1,9 +1,9 @@
-use glium::glutin::{
+use glium::{glutin::{
     dpi::PhysicalSize,
     event_loop::EventLoop,
-    window::{self, WindowBuilder, Fullscreen},
-    ContextBuilder, ContextWrapper, PossiblyCurrent,
-};
+    window::{WindowBuilder, Fullscreen},
+    ContextBuilder,
+}, Display};
 
 pub struct WindowSettings<'a> {
     width: u32,
@@ -24,7 +24,7 @@ impl Default for WindowSettings<'_> {
 }
 
 pub struct Window {
-    context: ContextWrapper<PossiblyCurrent, window::Window>,
+    pub display: Display,
 }
 
 fn create_window_builder(settings: &WindowSettings) -> WindowBuilder {
@@ -52,12 +52,11 @@ fn create_window_builder(settings: &WindowSettings) -> WindowBuilder {
 impl Window {
     pub fn new(settings: WindowSettings, event_loop: &EventLoop<()>) -> Self {
         let window_builder = create_window_builder(&settings);
-        let context = ContextBuilder::new()
-            .build_windowed(window_builder, event_loop)
-            .unwrap();
+        
+        let context_builder = ContextBuilder::new();
+        
+        let display = Display::new(window_builder, context_builder, event_loop).unwrap();
 
-        let context = unsafe { context.make_current().unwrap() };
-
-        Self { context }
+        Self { display }
     }
 }

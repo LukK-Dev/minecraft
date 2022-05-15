@@ -1,30 +1,36 @@
 use glium::glutin::{
-    event::{Event, KeyboardInput, VirtualKeyCode, WindowEvent},
-    event_loop::{self, ControlFlow, EventLoop},
+    event::{Event, VirtualKeyCode, WindowEvent},
+    event_loop::{ControlFlow, EventLoop},
 };
 use winit_input_helper::WinitInputHelper;
 
-use crate::window::{Window, WindowSettings};
+use crate::{
+    renderer::Renderer,
+    window::{Window, WindowSettings},
+};
 
 pub struct Application {
     event_loop: EventLoop<()>,
     window: Window,
     input_manager: WinitInputHelper,
+    renderer: Renderer,
 }
 
 impl Application {
     pub fn new() -> Self {
-        let mut event_loop = EventLoop::new();
+        let event_loop = EventLoop::new();
 
         let window_settings = WindowSettings::default();
         let window = Window::new(window_settings, &event_loop);
 
         let input_manager = WinitInputHelper::new();
+        let renderer = Renderer::new(&window.display);
 
         Self {
             event_loop,
             window,
             input_manager,
+            renderer,
         }
     }
 
@@ -43,7 +49,9 @@ impl Application {
                     WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
                     _ => {}
                 },
-                Event::MainEventsCleared => {}
+                Event::MainEventsCleared => {
+                    self.renderer.draw(&self.window.display);
+                }
                 _ => {}
             }
         });

@@ -1,3 +1,6 @@
+use engine::application::Application;
+
 fn main() {
-    println!("Hello, world!");
+    let application = Application::new();
+    application.run();
 }

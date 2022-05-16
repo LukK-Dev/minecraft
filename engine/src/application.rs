@@ -9,14 +9,14 @@ use crate::{
     window::{Window, WindowSettings},
 };
 
-pub struct Application {
+pub struct Application<'a> {
     event_loop: EventLoop<()>,
     window: Window,
     input_manager: WinitInputHelper,
-    renderer: Renderer,
+    renderer: Renderer<'a>,
 }
 
-impl Application {
+impl Application<'static> {
     pub fn new() -> Self {
         let event_loop = EventLoop::new();
 
